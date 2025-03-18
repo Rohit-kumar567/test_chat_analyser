@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 def preprocess(data):
-    pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s'
+    pattern = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s'
 
     # Split messages and extract dates
     messages = re.split(pattern, data)[1:]
@@ -41,6 +41,16 @@ def preprocess(data):
         df['day_name'] = df['date'].dt.day_name()
         df['hour'] = df['date'].dt.hour
         df['minute'] = df['date'].dt.minute
+    else:
+        # Fill with default values if date parsing fails
+        df['only_date'] = pd.NaT
+        df['year'] = pd.NaT
+        df['month_num'] = pd.NaT
+        df['month'] = pd.NaT
+        df['day'] = pd.NaT
+        df['day_name'] = pd.NaT
+        df['hour'] = pd.NaT
+        df['minute'] = pd.NaT
 
     # Extract period for better time-based analysis
     if 'hour' in df.columns:
