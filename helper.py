@@ -49,6 +49,16 @@ def monthly_timeline(selected_user, df):
 
     return timeline
 
+def daily_timeline(selected_user, df):
+    if 'only_date' not in df.columns:
+        return pd.DataFrame()  # Prevent error if 'only_date' is missing
+
+    if selected_user != 'Overall':
+        df = df[df['user'] == selected_user]
+
+    daily_timeline = df.groupby('only_date').count()['message'].reset_index()
+    return daily_timeline
+
 def deleted_message_analysis(df):
     return df[df['message'].str.contains('This message was deleted')].shape[0]
 
