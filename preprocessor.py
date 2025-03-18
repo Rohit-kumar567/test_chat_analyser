@@ -43,14 +43,9 @@ def preprocess(data):
         df['minute'] = df['date'].dt.minute
 
     # Extract period for better time-based analysis
-    period = []
-    for hour in df.get(['day_name', 'hour'], pd.DataFrame()).get('hour', []):
-        if hour == 23:
-            period.append(str(hour) + "-" + str('00'))
-        elif hour == 0:
-            period.append(str('00') + "-" + str(hour + 1))
-        else:
-            period.append(str(hour) + "-" + str(hour + 1))
+    if 'hour' in df.columns:
+        df['period'] = df['hour'].apply(lambda x: f"{x}-{(x + 1) % 24}")
+    else:
+        df['period'] = ''
 
-    df['period'] = period
     return df
