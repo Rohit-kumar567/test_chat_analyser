@@ -54,7 +54,7 @@ def preprocess(data):
 
     # Extract period for better time-based analysis
     if 'hour' in df.columns:
-        df['period'] = df['hour'].apply(lambda x: f"{x}-{(x + 1) % 24}")
+        df['period'] = df['hour'].apply(lambda x: f"{int(x)}-{(int(x) + 1) % 24}" if pd.notna(x) else '')
     else:
         df['period'] = ''
 
