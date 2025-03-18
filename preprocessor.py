@@ -32,18 +32,19 @@ def preprocess(data):
     df.drop(columns=['user_message'], inplace=True)
 
     # Extract multiple date-time components
-    df['only_date'] = df['date'].dt.date
-    df['year'] = df['date'].dt.year
-    df['month_num'] = df['date'].dt.month
-    df['month'] = df['date'].dt.month_name()
-    df['day'] = df['date'].dt.day
-    df['day_name'] = df['date'].dt.day_name()
-    df['hour'] = df['date'].dt.hour
-    df['minute'] = df['date'].dt.minute
+    if 'date' in df.columns and not df['date'].isnull().all():
+        df['only_date'] = df['date'].dt.date
+        df['year'] = df['date'].dt.year
+        df['month_num'] = df['date'].dt.month
+        df['month'] = df['date'].dt.month_name()
+        df['day'] = df['date'].dt.day
+        df['day_name'] = df['date'].dt.day_name()
+        df['hour'] = df['date'].dt.hour
+        df['minute'] = df['date'].dt.minute
 
     # Extract period for better time-based analysis
     period = []
-    for hour in df[['day_name', 'hour']]['hour']:
+    for hour in df.get(['day_name', 'hour'], pd.DataFrame()).get('hour', []):
         if hour == 23:
             period.append(str(hour) + "-" + str('00'))
         elif hour == 0:
