@@ -132,7 +132,7 @@ if uploaded_file is not None:
         # Frequent Word Pairs 
         
         st.title(":blue[Frequent Word Pairs]")
-        word_pairs = frequent_word_pairs(selected_user, df)
+        word_pairs = helper.frequent_word_pairs(selected_user, df)
         st.dataframe(word_pairs)
 
         # Longest Message Analysis
