@@ -11,7 +11,7 @@ if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
     #convert byte to string
     data = bytes_data.decode("utf-8")
-
+    
     #call the preprocess func to give df
     df = preprocessor.preprocess(data)
 
@@ -22,7 +22,7 @@ if uploaded_file is not None:
     user_list.sort()
     user_list.insert(0, 'Overall')
     selected_user = st.sidebar.selectbox("Show analysis wrt",user_list)
-
+    
     #button to analyze chat
     if(st.sidebar.button("Show Analysis")):
         #Display basic stats in 4 cols
@@ -58,10 +58,10 @@ if uploaded_file is not None:
         plt.xticks(rotation='vertical')
         st.pyplot(fig)
 
-        # Activity map
+        # activity map
         st.title(':blue[Activity Map]')
         col1,col2 = st.columns(2)
-        # Weekly activity
+        #weekly activity
         with col1:
             st.header(":green[Most busy day]")
             busy_day = helper.week_activity_map(selected_user,df)
@@ -69,7 +69,7 @@ if uploaded_file is not None:
             ax.bar(busy_day.index,busy_day.values,color='purple')
             plt.xticks(rotation='vertical')
             st.pyplot(fig)
-        # Monthly activity
+        #monthly activity
         with col2:
             st.header(":green[Most busy month]")
             busy_month = helper.month_activity_map(selected_user, df)
@@ -78,14 +78,14 @@ if uploaded_file is not None:
             plt.xticks(rotation='vertical')
             st.pyplot(fig)
 
-        # Time activity
+        #time activity
         st.title("Weekly Activity Map")
         user_heatmap = helper.activity_heatmap(selected_user,df)
         fig,ax = plt.subplots()
         ax = sns.heatmap(user_heatmap)
         st.pyplot(fig)
 
-        # Finding the busiest users in the group (Group level)
+        # finding the busiest users in the group(Group level)
         if selected_user == 'Overall':
             st.title(':blue[Most Busy Users]')
             x,new_df = helper.most_busy_users(df)
@@ -107,7 +107,7 @@ if uploaded_file is not None:
         ax.imshow(df_wc)
         st.pyplot(fig)
 
-        # Most common words
+        # most common words
         st.title(':blue[Most commmon words]')
         most_common_df = helper.most_common_words(selected_user,df)
         fig,ax = plt.subplots()
@@ -115,7 +115,7 @@ if uploaded_file is not None:
         plt.xticks(rotation='vertical')
         st.pyplot(fig)
 
-        # Emoji analysis
+        # emoji analysis
         st.title(":blue[Emoji Analysis]")
         emoji_df = helper.emoji_helper(selected_user,df)
         if emoji_df.shape[0] > 0:
@@ -128,24 +128,33 @@ if uploaded_file is not None:
                 st.pyplot(fig)
         else:
             st.write(":red[No Emojis Send by this user]")
+        
+        # Frequent Word Pairs 
+        
+        st.title(":blue[Frequent Word Pairs]")
+        word_pairs = frequent_word_pairs(selected_user, df)
+        st.dataframe(word_pairs)
 
-        # New Features Integration
-        st.title(":blue[Deleted Message Analysis]")
-        st.write(f"Deleted messages: {helper.deleted_message_analysis(df)}")
+        # Longest Message Analysis
+        
+        st.title(":blue[Longest Message Analysis]")
+        longest_msg, length = longest_message_analysis(selected_user, df)
+        st.write(f"**Longest Message:** {longest_msg}")
+        st.write(f"**Message Length:** {length}")
+        
+        # Conversation Starters Analysis
+        
+        st.title(":blue[Conversation Starters Analysis]")
+        starters = conversation_starters_analysis(df)
+        st.dataframe(starters)
+        
+        # Sentiment Analysis with Visuals
 
-        st.title(":blue[Media Content Timeline]")
-        media_timeline = helper.media_content_timeline(selected_user, df)
-        st.line_chart(media_timeline)
+        st.title(":blue[Sentiment Analysis]")
+        sentiment_counts = sentiment_analysis(selected_user, df)
+        st.write(sentiment_counts)
 
-        st.title(":blue[Top Shared Links]")
-        st.write(helper.top_shared_links(selected_user, df))
 
-        st.title(":blue[Response Time Analysis]")
-        st.write(helper.calculate_response_time(df))
+    
+        
 
-        st.title(":blue[Message Length Analysis]")
-        st.write(helper.analyze_message_length(selected_user, df))
-
-        st.title(":blue[Keyword Extraction]")
-        keywords = helper.extract_keywords(df['message'].dropna().tolist())
-        st.write(", ".join(keywords))
