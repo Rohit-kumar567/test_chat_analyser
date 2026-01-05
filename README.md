@@ -65,6 +65,10 @@ python -m pytest tests/
    - Response times
    - Conversation starters
    - Activity comparison
+     
+---
+
+**Project:** WhatsApp Chat Analyzer  
 **Author:** B Rohit Kumar  
 **CSE Student**  
 **Happy Coding!** 🚀
